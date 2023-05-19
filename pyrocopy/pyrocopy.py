@@ -1,3 +1,5 @@
+# pyinstaller --icon=p_icon_132115.ico -F -n BTMP4.exe BTMP4.py
+# pyinstaller -F -n Pyrocopy.exe __init__.py
 #!/usr/bin/env python
 '''
 Robust file utilities for Python inspired by Windows' robocopy.
@@ -396,8 +398,10 @@ def mirror(src, dst, includeFiles=None, includeDirs=None, excludeFiles=None, exc
         results['filesRemovedList'] = []
         results['dirsRemovedList'] = []
     # Add the exclude fils
-    results['dirsSkippedList'] += excludeDirs
-    results['filesSkippedList'] += excludeFiles
+    if excludeDirs:
+        results['dirsSkippedList'] += excludeDirs
+    if excludeFiles:
+        results['filesSkippedList'] += excludeFiles
 
     # Determine the max depth of src so that we don't go beyond that level in dst (if they're different)
     maxDepth = _getTreeDepth(src)
@@ -820,7 +824,8 @@ Given a path 'Level1/Level2/Level3' and a pattern 'Level1' would return 'Level1/
 def _normalizeDirPattern(pattern, path):
     bIsRegex = False
     tmpPattern = pattern
-    if (isinstance(pattern, re._pattern_type)):
+    #if (isinstance(pattern, re._pattern_type)):
+    if (isinstance(pattern, re.Pattern)):
         tmpPattern = pattern.pattern
         bIsRegex = True
     elif (pattern.startswith('re:')):
@@ -877,7 +882,8 @@ Given a filepath 'Level1/Level2/MyFile.txt' and a pattern 'Level1/*.txt' will re
 def _normalizeFilePattern(pattern, filepath):
     bIsRegex = False
     tmpPattern = pattern
-    if (isinstance(pattern, re._pattern_type)):
+    #if (isinstance(pattern, re._pattern_type)):
+    if (isinstance(pattern, re.Pattern)):
         tmpPattern = pattern.pattern
         bIsRegex = True
     elif (pattern.startswith('re:')):
@@ -952,7 +958,8 @@ def _checkShouldCopy(path, bIsFile, includes, excludes):
             else:
                 normPattern = _normalizeDirPattern(pattern, path)
 
-            if (isinstance(normPattern, re._pattern_type)):
+            #if (isinstance(normPattern, re._pattern_type)):
+            if (isinstance(normPattern, re.Pattern)):
                 if (normPattern.match(rePath) != None):
                     isIncluded = True
                     break
@@ -971,7 +978,8 @@ def _checkShouldCopy(path, bIsFile, includes, excludes):
             else:
                 normPattern = _normalizeDirPattern(pattern, path)
 
-            if (isinstance(normPattern, re._pattern_type)):
+            #if (isinstance(normPattern, re._pattern_type)):
+            if (isinstance(normPattern, re.Pattern)):
                 if (normPattern.match(rePath) != None):
                     return False
             else:
